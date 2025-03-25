@@ -7,12 +7,15 @@ Plusieurs arduino recepteur/emetteur
 Un seul arduino serveur recepteur (ou rasberry)
 
 
-construction d'une trame :
-ID_Trame.
+construction d'une trame depuis un arduino capteur:
+ID_Trame:ID_arduino:temperature:humidité:présence:lumiere:
 
+construction d'une trame depuis un arduino serveur :
+ID_serveur:ID_destinataire:action
+id_server doit etre reconnu par tous, par exemple 00
 
 Pour les arduinos : 
-    - Si ils reçoivent une trame, ils la renvoient (sauf s'ils l'ont déjà envoyé auparavent, pour éviter les boucles)
+    - Si ils reçoivent une trame, ils la renvoient (sauf s'ils l'ont déjà envoyé auparavant, pour éviter les boucles)
 
 Pour le serveur : 
     - Si ils reçoivent une trame :

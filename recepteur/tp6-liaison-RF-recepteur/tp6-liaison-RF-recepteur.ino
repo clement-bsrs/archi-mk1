@@ -21,8 +21,10 @@ void setup() {
   vw_rx_start();             // Démarrage du récepteur
   pinMode(12, OUTPUT);       // LED pour indiquer la réception
   Serial.println("Message envoyé");
-  char msg[] = "00:01:12:34:56";
+  char msg[] = "XX:02:01:12:34:56";
   vw_send((uint8_t *)msg, 1 + strlen(msg));
+  Serial.println("- - - - - - - - - - - -");
+  Serial.println("");
 }
 
 void loop() {
@@ -43,12 +45,18 @@ void loop() {
     analyser_trame(buf, buflen);
 
   } else {
+    analyser_trame(buf, buflen);
     // Si la trame est déjà dans le tableau, ne rien afficher
     // Rien à afficher ici, on ne fait rien si la trame est déjà présente
   }
 }
 
 void analyser_trame(uint8_t *buf, uint8_t &buflen) {
+  // Vérifier que la trame a exactement 23 caractères (octets)
+  if (buflen != 24) {
+    return;  // Sortir de la fonction sans faire d'autres traitements
+  }
+
   // Vérifier si la trame est déjà dans le tableau
   bool is_new = true;
   for (int i = 0; i < trames_count; i++) {
@@ -98,13 +106,42 @@ void analyser_trame(uint8_t *buf, uint8_t &buflen) {
 
     //-------------------------
     // Analyser la trame
-    int id_arduino[2];
-    id_arduino[0] = buf[0];
-    id_arduino[1] = buf[1];
-    Serial.println("ID de l'arduino : ");
-    Serial.print((char)id_arduino[0]);
-    Serial.print((char)id_arduino[1]);
-    Serial.println();
+
+    // Vérifier que ça commence par XX
+    char entete1 = (char)buf[0];
+    char entete2 = (char)buf[1];
+
+    char entete[3];  // Tableau pour stocker le résultat, taille de 3 pour 2 caractères + '\0' (caractère de fin de chaîne)
+    entete[0] = entete1;
+    entete[1] = entete2;
+    entete[2] = '\0';  // N'oublie pas de terminer la chaîne par un '\0'
+    
+    Serial.println("Entete : ");
+    Serial.println(entete);  // Doit afficher XX;
+
+    // Récupérer l'ID de l'arduino
+    char idArduino1 = (char)buf[3];
+    char idArduino2 = (char)buf[4];
+
+    char idArduino[3];  // Tableau pour stocker le résultat, taille de 3 pour 2 caractères + '\0' (caractère de fin de chaîne)
+    idArduino[0] = idArduino1;
+    idArduino[1] = idArduino2;
+    idArduino[2] = '\0';  // N'oublie pas de terminer la chaîne par un '\0'
+    
+    Serial.println("ID Arduino: ");
+    Serial.println(idArduino);  // Doit afficher l'id;
+
+    // Récupérer l'id de la trame
+    char idTrame1 = (char)buf[6];
+    char idTrame2 = (char)buf[7];
+
+    char idTrame[3];  // Tableau pour stocker le résultat, taille de 3 pour 2 caractères + '\0' (caractère de fin de chaîne)
+    idTrame[0] = idTrame1;
+    idTrame[1] = idTrame2;
+    idTrame[2] = '\0';  // N'oublie pas de terminer la chaîne par un '\0'
+    
+    Serial.println("ID Trame : ");
+    Serial.println(idTrame);  // Doit afficher XX;
 
     //-------------------------
 
@@ -123,5 +160,6 @@ void analyser_trame(uint8_t *buf, uint8_t &buflen) {
       Serial.println();
     }
     Serial.println("- - - - - - - - - - - - - - -");
+    Serial.println("");
   }
 }

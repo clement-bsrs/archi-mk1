@@ -22,3 +22,6 @@ Pour le serveur :
     - Si ils reçoivent une trame :
         - Soit ils ne l'ont pas déjà reçu, et la traite
         - Soit ils l'ont déjà reçu, et l'ignorent.
+    - Faire un menu qui s'affiche toutes les 3secondes par exemple, et qui montre les dernières (ou moyenne) infos reçues
+
+nettoyer le code du serveur

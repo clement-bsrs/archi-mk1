@@ -4,13 +4,21 @@ int RF_RX_PIN = 4;  // Broche de réception
 int RF_TX_PIN = 2;  // Broche d'envoi
 
 unsigned long previousMillis = 0;  // Stocke le temps du dernier événement
-const long interval = 500;         // Intervalle de 500 ms (délai non-bloquant)
+const long interval = 8000;         // Intervalle de 500 ms (délai non-bloquant)
 
 // Tableau global pour stocker les trames reçues
 #define MAX_TRAMES 10                            // Taille maximale du tableau de trames
 uint8_t trames[MAX_TRAMES][VW_MAX_MESSAGE_LEN];  // Tableau pour stocker les trames brutes
 uint8_t trames_count = 0;                        // Compteur de trames stockées
 uint8_t current_index = 0;                       // Indice pour ajouter/mettre à jour la trame dans le tableau
+
+
+// Valeurs des données
+char temperature[] = "FF";
+char humidite[] = "FF";
+char presence[] = "FF";
+char lumiere[] = "FF";
+
 
 void setup() {
   Serial.begin(9600);
@@ -20,9 +28,9 @@ void setup() {
   vw_setup(2000);            // Choix de la vitesse de transmission
   vw_rx_start();             // Démarrage du récepteur
   pinMode(12, OUTPUT);       // LED pour indiquer la réception
-  Serial.println("Message envoyé");
-  char msg[] = "XX:02:01:12:34:56";
-  vw_send((uint8_t *)msg, 1 + strlen(msg));
+  // Serial.println("Message envoyé");
+  // char msg[] = "XX:00:01:12:34:56:78:99";
+  // vw_send((uint8_t *)msg, 1 + strlen(msg));
   Serial.println("- - - - - - - - - - - -");
   Serial.println("");
 }
@@ -37,6 +45,12 @@ void loop() {
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
     digitalWrite(12, LOW);  // Éteindre la LED
+    // Serial.println("Message envoyé");
+    // char msg[] = "XX:00:01:12:34:56:78:99";
+    // vw_send((uint8_t *)msg, 1 + strlen(msg));
+
+    afficher_menu(String(temperature), String(humidite), String(presence), String(lumiere));
+
   }
 
   // Si un message est reçu
@@ -45,9 +59,8 @@ void loop() {
     analyser_trame(buf, buflen);
 
   } else {
-    analyser_trame(buf, buflen);
+    //analyser_trame(buf, buflen);
     // Si la trame est déjà dans le tableau, ne rien afficher
-    // Rien à afficher ici, on ne fait rien si la trame est déjà présente
   }
 }
 
@@ -126,7 +139,7 @@ void analyser_trame(uint8_t *buf, uint8_t &buflen) {
     char idArduino[3];  // Tableau pour stocker le résultat, taille de 3 pour 2 caractères + '\0' (caractère de fin de chaîne)
     idArduino[0] = idArduino1;
     idArduino[1] = idArduino2;
-    idArduino[2] = '\0';  // N'oublie pas de terminer la chaîne par un '\0'
+    idArduino[2] = '\0'; 
     
     Serial.println("ID Arduino: ");
     Serial.println(idArduino);  // Doit afficher l'id;
@@ -142,6 +155,17 @@ void analyser_trame(uint8_t *buf, uint8_t &buflen) {
     
     Serial.println("ID Trame : ");
     Serial.println(idTrame);  // Doit afficher XX;
+
+    // if(String(idTrame) != "XX\0") {
+    //   return;
+    // }
+    
+    char temp1 = (char)buf[9];
+    char temp2 = (char)buf[10];
+
+    temperature[0] = temp1;
+    temperature[1] = temp2;
+    temperature[2] = '\0';
 
     //-------------------------
 
@@ -159,7 +183,18 @@ void analyser_trame(uint8_t *buf, uint8_t &buflen) {
       }
       Serial.println();
     }
+
+
     Serial.println("- - - - - - - - - - - - - - -");
     Serial.println("");
   }
+}
+
+
+void afficher_menu(String t, String h, String p, String l) {
+  Serial.println("- - - - - - - - Menu - - - - - - - - -");
+  Serial.println("Temp   |   humi   |   pres   |   lumi");
+  Serial.println(" " + t+ "    |    " + h + "    |    " + p + "    |    " + l);
+  Serial.println("- - - - - - - - - - - - - - - - - - -");
+
 }

@@ -16,8 +16,9 @@ uint8_t current_index = 0;                       // Indice pour ajouter/mettre �
 // Valeurs des données
 char temperature[] = "FF";
 char humidite[] = "FF";
-char presence[] = "FF";
+char pression[] = "FFFF";
 char lumiere[] = "FF";
+String presence = "inconnu";
 
 
 void setup() {
@@ -49,7 +50,7 @@ void loop() {
     // char msg[] = "XX:00:01:12:34:56:78:99";
     // vw_send((uint8_t *)msg, 1 + strlen(msg));
 
-    afficher_menu(String(temperature), String(humidite), String(presence), String(lumiere));
+    afficher_menu(String(temperature), String(humidite), String(pression), String(lumiere), presence);
 
   }
 
@@ -160,29 +161,77 @@ void analyser_trame(uint8_t *buf, uint8_t &buflen) {
     //   return;
     // }
     
-    char temp1 = (char)buf[9];
-    char temp2 = (char)buf[10];
+    if (strcmp(idTrame, "00") == 0) {
+
+
+    char temp1 = (char)buf[12];
+    char temp2 = (char)buf[13];
 
     temperature[0] = temp1;
     temperature[1] = temp2;
     temperature[2] = '\0';
 
+
+    char hum1 = (char)buf[15];
+    char hum2 = (char)buf[16];
+
+    humidite[0] = hum1;
+    humidite[1] = hum2;
+    humidite[2] = '\0';
+
+
+    char press1 = (char)buf[18];
+    char press2 = (char)buf[19];
+    char press3 = (char)buf[21];
+    char press4 = (char)buf[22];
+
+    pression[0] = press1;
+    pression[1] = press2;
+    pression[2] = press3;
+    pression[3] = press4;
+    pression[4] = '\0';
+
+    char lumiere1 = (char)buf[24];
+    char lumiere2 = (char)buf[25];
+
+    lumiere[0] = lumiere1;
+    lumiere[1] = lumiere2;
+    lumiere[2] = '\0';
+
+    }
+
+  if (strcmp(idTrame, "01") == 0) {
+      char presence1 = (char)buf[12]; // Présence aux indices 22 et 23
+      char presence2 = (char)buf[13];
+
+      char numero[3] = {presence1, presence2, '\0'};
+
+      if (strcmp(numero, "37") == 0) {
+        presence = "Clement";
+      } else if (strcmp(numero, "22") == 0) {
+        presence = "Matheo";
+      } else {
+        presence = "inconnu2";
+      }
+    }
+
+    
     //-------------------------
 
     // Afficher le tableau des trames stockées après l'ajout ou la mise à jour
-    Serial.println("Trames stockées :");
-    for (int i = 0; i < trames_count; i++) {
-      Serial.print("Trame ");
-      Serial.print(i);
-      Serial.print(": ");
-      for (int j = 0; j < VW_MAX_MESSAGE_LEN; j++) {
-        if (trames[i][j] != 0) {  // Afficher uniquement les octets non nuls
-          Serial.print(trames[i][j], HEX);
-          Serial.print(" ");
-        }
-      }
-      Serial.println();
-    }
+    //Serial.println("Trames stockées :");
+    //for (int i = 0; i < trames_count; i++) {
+    //  Serial.print("Trame ");
+    //  Serial.print(i);
+    //  Serial.print(": ");
+    //  for (int j = 0; j < VW_MAX_MESSAGE_LEN; j++) {
+    //    if (trames[i][j] != 0) {  // Afficher uniquement les octets non nuls
+    //      Serial.print(trames[i][j], HEX);
+    //      Serial.print(" ");
+    //    }
+    //  }
+    //  Serial.println();
+    //}
 
 
     Serial.println("- - - - - - - - - - - - - - -");
@@ -191,10 +240,10 @@ void analyser_trame(uint8_t *buf, uint8_t &buflen) {
 }
 
 
-void afficher_menu(String t, String h, String p, String l) {
+void afficher_menu(String t, String h, String p, String l, String p2) {
   Serial.println("- - - - - - - - Menu - - - - - - - - -");
-  Serial.println("Temp   |   humi   |   pres   |   lumi");
-  Serial.println(" " + t+ "    |    " + h + "    |    " + p + "    |    " + l);
+  Serial.println("Température   |   humidité   |   pression     |   lumière   |      présence");
+  Serial.println(" " + t + "           |    " + h + "        |    " + p + "        |    " + l + "       |      " + p2);
   Serial.println("- - - - - - - - - - - - - - - - - - -");
 
 }

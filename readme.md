@@ -1,4 +1,4 @@
-projet architecture des ordinateur | maison connect
+projet architecture des ordinateur | maison connecté
 
    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /!\ - - penser à inclure les librairie dans l'IDE Arduino - - /!\

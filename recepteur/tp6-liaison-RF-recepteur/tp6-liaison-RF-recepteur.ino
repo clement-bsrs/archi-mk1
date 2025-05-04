@@ -7,7 +7,7 @@ unsigned long previousMillis = 0;  // Stocke le temps du dernier événement
 const long interval = 8000;         // Intervalle de 500 ms (délai non-bloquant)
 
 // Tableau global pour stocker les trames reçues
-#define MAX_TRAMES 10                            // Taille maximale du tableau de trames
+#define MAX_TRAMES 50                            // Taille maximale du tableau de trames
 uint8_t trames[MAX_TRAMES][VW_MAX_MESSAGE_LEN];  // Tableau pour stocker les trames brutes
 uint8_t trames_count = 0;                        // Compteur de trames stockées
 uint8_t current_index = 0;                       // Indice pour ajouter/mettre à jour la trame dans le tableau

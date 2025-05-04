@@ -1,7 +1,12 @@
 projet architecture des ordinateur | maison connect
 
-emetteur/emet/emet.ino -> code de l'émetteur
-recepteur/tp6-liaison-RF-recepteur/tp6-liaison-RF-recepteur.ino -> code du recepteur (Serveur)
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/!\ - - penser à inclure les librairie dans l'IDE Arduino - - /!\
+   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+   
+- emetteur/emet/emet.ino -> code de l'émetteur
+
+- recepteur/tp6-liaison-RF-recepteur/tp6-liaison-RF-recepteur.ino -> code du recepteur (Serveur)
 
 
 

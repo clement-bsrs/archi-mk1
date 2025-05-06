@@ -1,5 +1,9 @@
 /*
-* ce code envoie des trame toutes les deux secondes avec l'id de trame qui s'incrémente jusqu'à 100 puis revient a 0
+* 0 ,1        -  XX        ->  identifiant du protocole
+  2 ,3        -  ID_AR     ->  id de l'arduino
+  4 ,5        -  TP_TR     ->  type de la trame (00 -> variable environnementale | 01 -> contrôle d'accés)
+  6 ,7        -  ID_TR     ->  id de la trame
+  8, 9, 10, 11, 12, 13, 14, 15 -> données (xx:xx:xx:xx)
 */
 #include <SPI.h>
 #include <VirtualWire.h>
